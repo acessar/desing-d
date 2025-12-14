@@ -87,8 +87,8 @@ body::before {
 .loader {
     width: 40px;
     height: 40px;
-    border: 2px solid #f0f0f0;
-    border-top: 2px solid #2a2a2a;
+    border: 3px solid #FFB3D9;
+    border-top: 3px solid #D946A6;
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
@@ -142,9 +142,38 @@ body::before {
     }
 }
 
-@keyframes gentleFloat {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-5px); }
+
+
+@keyframes glitter {
+    0%, 100% {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    20% {
+        opacity: 1;
+        transform: scale(1.2);
+    }
+    40% {
+        opacity: 0.8;
+        transform: scale(1);
+    }
+    60% {
+        opacity: 1;
+        transform: scale(1.1);
+    }
+    80% {
+        opacity: 0.6;
+        transform: scale(0.9);
+    }
+}
+
+@keyframes glitterShimmer {
+    0% {
+        left: -100%;
+    }
+    100% {
+        left: 100%;
+    }
 }
 
 /* Banner minimalista */
@@ -163,6 +192,7 @@ body::before {
     width: 100%;
     margin: 0 auto;
     z-index: 2;
+    margin-bottom: 0; /* Remove margem inferior */
 }
 
 .hero-content {
@@ -350,6 +380,7 @@ header {
     flex-direction: column;
     gap: 1.5rem;
     margin-top: 1rem;
+    margin-bottom: 0; /* Remove margem inferior para eliminar espaço vazio */
     align-items: center;
     width: 100%;
     max-width: 400px;
@@ -357,6 +388,141 @@ header {
     margin-left: auto;
     margin-right: auto;
     padding: 0 1rem;
+}
+
+/* Botões Sociais (Instagram e Facebook) - Apenas Ícones */
+.social-buttons-container {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    animation: fadeInUp 0.8s ease-out 0.4s both;
+    position: relative;
+}
+
+/* Partículas de glitter ao redor dos botões sociais */
+.social-buttons-container::before,
+.social-buttons-container::after {
+    content: '✦';
+    position: absolute;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.9), 
+                 0 0 15px rgba(255, 255, 255, 0.7),
+                 0 0 20px rgba(255, 79, 179, 0.5);
+    pointer-events: none;
+    z-index: 4;
+    animation: glitter 3s ease-in-out infinite;
+}
+
+.social-buttons-container::before {
+    top: -10px;
+    left: 10%;
+    animation-delay: 0s;
+}
+
+.social-buttons-container::after {
+    top: -10px;
+    right: 10%;
+    animation-delay: 1.5s;
+}
+
+.social-icon-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #FF4FB3 0%, #FF6BC4 100%);
+    border-radius: 50%;
+    color: #ffffff;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 15px rgba(255, 79, 179, 0.25), 
+                0 2px 8px rgba(255, 79, 179, 0.15);
+    position: relative;
+    overflow: visible;
+}
+
+.social-icon-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.05) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: 50%;
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* Efeito de glitter interno nos botões sociais */
+.social-icon-button::after {
+    content: '';
+    position: absolute;
+    top: -30%;
+    left: -30%;
+    width: 160%;
+    height: 160%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 60%);
+    opacity: 0.5;
+    z-index: 1;
+    border-radius: 50%;
+    animation: glitter 2.5s ease-in-out infinite;
+    pointer-events: none;
+}
+
+.social-icon-button:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 6px 20px rgba(255, 79, 179, 0.3), 
+                0 4px 12px rgba(255, 79, 179, 0.2),
+                0 0 8px rgba(255, 79, 179, 0.15);
+    background: linear-gradient(135deg, #FF6BC4 0%, #FF8DD1 100%);
+}
+
+.social-icon-button:hover::before {
+    opacity: 0.4;
+}
+
+.social-icon-button:hover::after {
+    opacity: 0.6;
+}
+
+.social-icon {
+    width: 24px;
+    height: 24px;
+    position: relative;
+    z-index: 2;
+}
+
+/* Partículas de glitter individuais para cada botão social */
+.glitter-particle {
+    position: absolute;
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.9), 
+                 0 0 15px rgba(255, 255, 255, 0.7),
+                 0 0 20px rgba(255, 79, 179, 0.5);
+    pointer-events: none;
+    z-index: 5;
+    animation: glitter 3s ease-in-out infinite;
+}
+
+.glitter-particle.glitter-1 {
+    top: -8px;
+    right: -5px;
+    animation-delay: 0s;
+}
+
+.glitter-particle.glitter-2 {
+    bottom: -8px;
+    left: -5px;
+    animation-delay: 1.5s;
+    font-size: 8px;
 }
 
 /* Carrossel de Serviços */
@@ -372,11 +538,12 @@ header {
 }
 
 .services-carousel-container {
+    position: relative;
     width: 100%;
-    padding: 0 0.5rem;
-    max-width: 100%;
+    max-width: 1200px;
     margin: 0 auto;
-    display: block; 
+    padding: 0 60px; /* Espaço lateral para os botões */
+    display: block;
 }
 
 .services-carousel {
@@ -384,17 +551,18 @@ header {
     gap: 1rem;
     overflow-x: auto;
     overflow-y: hidden;
-    scroll-snap-type: x mandatory;
+    scroll-snap-type: x mandatory; /* Apenas mobile - será removido no desktop */
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
     -ms-overflow-style: none;
     padding: 0.5rem 0;
-    padding-left: 7.5%;
     cursor: grab;
     user-select: none;
-    width: 100%; 
+    width: 100%;
     min-width: 0;
+    position: relative;
+    z-index: 1;
 }
 
 .services-carousel:active {
@@ -405,13 +573,23 @@ header {
     display: none;
 }
 
+/* Mobile First - Cards ocupam ~85% da largura */
 .service-card {
     flex: 0 0 85%;
     scroll-snap-align: start;
     cursor: pointer;
-    transition: transform 0.3s ease;
+    transition: all 0.3s ease;
     user-select: none;
     -webkit-user-drag: none;
+    min-width: 0;
+}
+
+.service-card:hover .service-card-image {
+    transform: scale(1.02); /* Efeito de zoom sutil no hover */
+    box-shadow: 0 12px 40px rgba(255, 20, 147, 0.35), 
+                0 6px 20px rgba(107, 45, 92, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 20, 147, 0.5);
 }
 
 .service-card:active {
@@ -422,15 +600,38 @@ header {
     position: relative;
     width: 100%;
     height: 280px;
-    background-size: cover;
-    background-position: center;
-    border-radius: 14px;
+    background-size: cover; /* Preenche o card sem corte */
+    background-position: center; /* Centraliza a imagem */
+    background-repeat: no-repeat;
+    border-radius: 32px !important;
     overflow: hidden;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-    border: 1px solid rgba(255, 20, 147, 0.2);
-    box-shadow: 0 4px 20px rgba(255, 20, 147, 0.15);
+    border: 2px solid rgba(255, 20, 147, 0.3);
+    box-shadow: 0 8px 32px rgba(255, 20, 147, 0.25), 
+                0 4px 16px rgba(107, 45, 92, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
     background-color: #FFF0F5;
-    background-image: none;
+    transition: all 0.3s ease;
+}
+
+/* Efeito de brilho sutil nos cards */
+.service-card-image::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.2), 
+        transparent);
+    transition: left 0.5s ease;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.service-card:hover .service-card-image::before {
+    left: 100%;
 }
 
 .service-card-overlay {
@@ -438,8 +639,12 @@ header {
     bottom: 0;
     left: 0;
     right: 0;
-    height: 50%;
-    background: linear-gradient(to top, rgba(107, 45, 92, 0.85) 0%, rgba(217, 70, 166, 0.4) 50%, transparent 100%);
+    height: 60%; /* Aumenta a altura do overlay para melhor legibilidade */
+    background: linear-gradient(to top, 
+        rgba(107, 45, 92, 0.95) 0%, 
+        rgba(217, 70, 166, 0.6) 40%, 
+        rgba(217, 70, 166, 0.3) 70%, 
+        transparent 100%);
     pointer-events: none;
 }
 
@@ -450,22 +655,135 @@ header {
     right: 0;
     padding: 1.5rem;
     z-index: 2;
+    background: linear-gradient(to top, 
+        rgba(107, 45, 92, 0.1) 0%, 
+        transparent 100%); /* Sobreposição sutil para melhor contraste */
 }
 
 .service-card-title {
     font-family: 'Playfair Display', serif;
-    font-size: 1.5rem;
+    font-size: 1.2rem; /* Reduzido de 1.5rem para caber completamente */
     font-weight: 600;
     color: #ffffff;
     margin-bottom: 0.5rem;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.7),
+                 0 0 20px rgba(255, 20, 147, 0.3),
+                 0 4px 8px rgba(107, 45, 92, 0.5); /* Sombra de texto mais rica */
+    letter-spacing: 0.5px; /* Espaçamento de letras mais elegante */
+    line-height: 1.3; /* Melhor quebra de linha */
 }
 
 .service-card-description {
     font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.9);
+    color: rgba(255, 255, 255, 0.95);
     font-weight: 300;
-    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.6),
+                 0 0 12px rgba(255, 20, 147, 0.2); /* Sombra de texto melhorada */
+    line-height: 1.5; /* Melhor espaçamento entre linhas */
+}
+
+/* Botões de Navegação Premium do Carrossel - CORES DELICADO */
+.carousel-nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 15; /* Alto z-index para ficar acima do conteúdo dos cards */
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: linear-gradient(135deg, #FF4FB3 0%, #FF6BC4 100%);
+    box-shadow: 0 4px 15px rgba(255, 79, 179, 0.25), 
+                0 2px 8px rgba(255, 79, 179, 0.15);
+    color: #ffffff;
+    padding: 0;
+    margin: 0;
+    outline: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    pointer-events: auto;
+}
+
+.carousel-nav-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.05) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: 50%;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.carousel-nav-btn::after {
+    content: '';
+    position: absolute;
+    top: -30%;
+    left: -30%;
+    width: 160%;
+    height: 160%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 1;
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.carousel-nav-btn:hover {
+    transform: translateY(-50%) scale(1.1);
+    background: linear-gradient(135deg, #FF6BC4 0%, #FF8DD1 100%);
+    box-shadow: 0 6px 20px rgba(255, 79, 179, 0.3), 
+                0 4px 12px rgba(255, 79, 179, 0.2),
+                0 0 8px rgba(255, 79, 179, 0.15);
+}
+
+.carousel-nav-btn:hover::before {
+    opacity: 0.4;
+}
+
+.carousel-nav-btn:hover::after {
+    opacity: 0.5;
+    animation: glitter 2.5s ease-in-out infinite;
+}
+
+.carousel-nav-btn:active {
+    transform: translateY(-50%) scale(0.95);
+    box-shadow: 0 2px 15px rgba(255, 79, 179, 0.4), 
+                0 0 30px rgba(255, 79, 179, 0.3);
+}
+
+.carousel-nav-btn svg {
+    width: 24px;
+    height: 24px;
+    stroke: currentColor;
+    position: relative;
+    z-index: 2;
+    filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.5));
+    transition: all 0.3s ease;
+}
+
+.carousel-nav-btn:hover svg {
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.8));
+    transform: scale(1.1);
+}
+
+/* Posicionamento dos Botões - Desktop (fora do container) */
+.carousel-nav-prev {
+    left: -60px;
+}
+
+.carousel-nav-next {
+    right: -60px;
 }
 
 /* Botões minimalistas - CORES DELICADO */
@@ -541,51 +859,6 @@ header {
     margin: 0 auto;
 }
 
-/* Efeito de shimmer/brilho que passa pelo botão */
-.main-button::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-        90deg,
-        transparent 0%,
-        rgba(255, 255, 255, 0.4) 50%,
-        transparent 100%
-    );
-    animation: glitterShimmer 3s ease-in-out infinite;
-    z-index: 1;
-    pointer-events: none;
-}
-
-/* Partículas de glitter dentro do botão */
-.main-button::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: 
-        radial-gradient(circle at 15% 20%, rgba(255, 255, 255, 0.9) 2px, transparent 2px),
-        radial-gradient(circle at 85% 30%, rgba(255, 255, 255, 0.8) 1.5px, transparent 1.5px),
-        radial-gradient(circle at 25% 70%, rgba(255, 255, 255, 0.85) 2px, transparent 2px),
-        radial-gradient(circle at 75% 80%, rgba(255, 255, 255, 0.9) 1.5px, transparent 1.5px),
-        radial-gradient(circle at 50% 10%, rgba(255, 255, 255, 0.75) 2px, transparent 2px),
-        radial-gradient(circle at 10% 50%, rgba(255, 255, 255, 0.7) 1px, transparent 1px),
-        radial-gradient(circle at 90% 60%, rgba(255, 255, 255, 0.8) 1.5px, transparent 1.5px);
-    background-size: 100% 100%;
-    background-position: 0 0;
-    opacity: 0.6;
-    animation: glitter 3.5s ease-in-out infinite;
-    z-index: 1;
-    pointer-events: none;
-    border-radius: 14px;
-    filter: blur(0.5px);
-}
-
 .main-button::before {
     content: '';
     position: absolute;
@@ -593,22 +866,26 @@ header {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.05) 100%);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.03) 100%);
     opacity: 0;
-    transition: opacity 0.4s ease;
+    transition: opacity 0.5s ease;
     z-index: 1;
+}
+
+.main-button:hover::before {
+    opacity: 0.4;
 }
 
 .main-button::after {
     content: '';
     position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+    top: -30%;
+    left: -30%;
+    width: 160%;
+    height: 160%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 60%);
     opacity: 0;
-    transition: opacity 0.4s ease;
+    transition: opacity 0.5s ease;
     z-index: 1;
 }
 
@@ -618,13 +895,13 @@ header {
     box-shadow: 0 12px 35px rgba(255, 79, 179, 0.35), 
                 0 6px 18px rgba(255, 79, 179, 0.25),
                 inset 0 1px 0 rgba(255, 255, 255, 0.3),
-                0 0 20px rgba(255, 79, 179, 0.2),
-                0 0 30px rgba(255, 255, 255, 0.3);
+                0 0 6px rgba(255, 79, 179, 0.08),
+                0 0 10px rgba(255, 255, 255, 0.12);
 }
 
 .main-button:hover::after {
-    opacity: 1;
-    animation: glitter 2s ease-in-out infinite;
+    opacity: 0.5;
+    animation: glitter 2.5s ease-in-out infinite;
 }
 
 .main-button span,
@@ -710,6 +987,93 @@ header {
     width: 24px;
     height: 24px;
     color: white;
+}
+
+/* Botão Flutuante do Chatbot - CORES DELICADO */
+.floating-chatbot {
+    position: fixed;
+    bottom: 25px;
+    left: 25px;
+    width: 56px;
+    height: 56px;
+    background: linear-gradient(135deg, #FF4FB3 0%, #FF6BC4 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(255, 79, 179, 0.25), 
+                0 2px 8px rgba(255, 79, 179, 0.15);
+    z-index: 1000;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    animation: heartbeat 2.5s ease-in-out infinite;
+    color: #ffffff;
+}
+
+.floating-chatbot::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.05) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: 50%;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.floating-chatbot::after {
+    content: '';
+    position: absolute;
+    top: -30%;
+    left: -30%;
+    width: 160%;
+    height: 160%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 1;
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.floating-chatbot:hover {
+    transform: scale(1.05);
+    background: linear-gradient(135deg, #FF6BC4 0%, #FF8DD1 100%);
+    box-shadow: 0 6px 20px rgba(255, 79, 179, 0.3), 
+                0 4px 12px rgba(255, 79, 179, 0.2),
+                0 0 8px rgba(255, 79, 179, 0.15);
+}
+
+.floating-chatbot:hover::before {
+    opacity: 0.4;
+}
+
+.floating-chatbot:hover::after {
+    opacity: 0.5;
+    animation: glitter 2.5s ease-in-out infinite;
+}
+
+.floating-chatbot:active {
+    transform: scale(0.95);
+}
+
+.floating-chatbot svg {
+    width: 24px;
+    height: 24px;
+    stroke: currentColor;
+    position: relative;
+    z-index: 2;
+    filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.5));
+    transition: all 0.3s ease;
+}
+
+.floating-chatbot:hover svg {
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.8));
+    transform: scale(1.1);
 }
 
 /* Modal minimalista */
@@ -952,7 +1316,7 @@ footer {
     background: #FF1493;
     color: #ffffff;
     padding: 1.5rem 0 1rem;
-    margin-top: 2rem;
+    margin-top: 0; /* Remove margem superior para eliminar espaço vazio */
     text-align: center;
     width: 100%;
     position: relative;
@@ -1040,8 +1404,15 @@ footer {
 /* RESPONSIVO */
 @media (max-width: 768px) {
     .hero-banner {
-        height: 50vh;
+        height: auto; /* Altura automática no mobile */
+        min-height: auto; /* Remove altura mínima */
+        max-height: none; /* Remove altura máxima */
+        padding: 1rem 0; /* Padding reduzido */
         background-attachment: scroll;
+    }
+    
+    .hero-content {
+        padding: 1rem 1.5rem; /* Padding reduzido no mobile */
     }
     
     .hero-content h1 {
@@ -1052,6 +1423,7 @@ footer {
     .hero-content .logo-container {
         width: 130px;
         height: 130px;
+        margin-bottom: 0.5rem; /* Reduz margem inferior */
         margin-left: auto;
         margin-right: auto;
     }
@@ -1067,16 +1439,60 @@ footer {
     }
     
     .services-carousel-section {
-        padding: 1.5rem 0;
+        padding: 1rem 0 0.5rem 0; /* Reduz padding superior e inferior para eliminar espaço vazio */
+        margin-bottom: 0; /* Remove margem inferior */
+    }
+    
+    /* Container Mobile - Sem padding lateral para maximizar espaço */
+    .services-carousel-container {
+        padding: 0;
+        max-width: 100%;
+        margin-bottom: 0; /* Remove margem inferior */
+    }
+    
+    /* Carrossel Mobile - 1 card principal visível */
+    .services-carousel {
+        padding-left: 1rem; /* Padding inicial para visualização */
+        padding-right: 1rem; /* Padding final para visualização */
+        gap: 1rem;
+        margin-bottom: 0; /* Remove margem inferior */
     }
     
     .service-card {
-        flex: 0 0 85%;
+        flex: 0 0 85% !important; /* Mobile: 85% da largura */
+        min-width: 280px;
+        scroll-snap-align: start; /* Mantém snap no mobile */
+    }
+    
+    /* Proteção do texto - padding lateral para evitar sobreposição dos botões */
+    .service-card-content {
+        padding: 1.5rem 2.5rem; /* Padding ajustado */
+    }
+    
+    /* Botões menores e em overlay sobre os cards no mobile */
+    .carousel-nav-btn {
+        width: 40px;
+        height: 40px;
+        z-index: 20;
+    }
+    
+    .carousel-nav-btn svg {
+        width: 20px;
+        height: 20px;
+    }
+    
+    /* Botões posicionados como overlay nas bordas dos cards no mobile - visíveis */
+    .carousel-nav-prev {
+        left: 5px;
+    }
+    
+    .carousel-nav-next {
+        right: 5px;
     }
     
     .service-card-image {
-        height: 240px;
-        border-radius: 12px;
+        height: 260px; /* Altura aumentada para melhor proporção visual */
+        border-radius: 32px !important; /* Bordas muito arredondadas */
     }
     
     .service-card-title {
@@ -1098,6 +1514,28 @@ footer {
         padding: 0 1rem;
         margin-left: auto;
         margin-right: auto;
+        margin-bottom: 0; /* Remove margem inferior para eliminar espaço vazio */
+    }
+    
+    /* Footer ajustado no mobile */
+    footer {
+        margin-top: 0; /* Remove margem superior no mobile */
+        padding: 1.2rem 0 0.8rem 0; /* Padding reduzido no mobile */
+    }
+
+    .social-buttons-container {
+        gap: 0.8rem;
+        margin-bottom: 0.3rem;
+    }
+
+    .social-icon-button {
+        width: 44px;
+        height: 44px;
+    }
+
+    .social-icon {
+        width: 22px;
+        height: 22px;
     }
     
     .main-button {
@@ -1134,16 +1572,50 @@ footer {
         width: 20px;
         height: 20px;
     }
+    
+    .floating-chatbot {
+        width: 50px;
+        height: 50px;
+        bottom: 20px;
+        left: 20px;
+    }
+    
+    .floating-chatbot svg {
+        width: 20px;
+        height: 20px;
+    }
 
     .brand-name {
         font-size: 2.2rem;
         letter-spacing: 2px;
     }
+
+    /* Ajustes do Chatbot no Mobile */
+    #chtl-widget-container,
+    .chtl-widget-container {
+        max-width: 100vw !important;
+        width: 100% !important;
+        left: 0 !important;
+        right: 0 !important;
+        margin: 0 !important;
+        padding: 0 10px !important;
+        box-sizing: border-box !important;
+    }
+
+    #chtl-widget-container iframe,
+    .chtl-widget-container iframe {
+        max-width: 100% !important;
+        width: 100% !important;
+    }
 }
 
 @media (max-width: 480px) {
+    .hero-banner {
+        padding: 0.8rem 0; /* Padding ainda mais reduzido */
+    }
+    
     .hero-content {
-        padding: 1.5rem 1rem;
+        padding: 0.8rem 1rem; /* Padding reduzido no mobile pequeno */
     }
 
     .hero-content h1 {
@@ -1153,6 +1625,7 @@ footer {
     .hero-content .logo-container {
         width: 110px;
         height: 110px;
+        margin-bottom: 0.3rem; /* Reduz margem inferior */
         margin-left: auto;
         margin-right: auto;
     }
@@ -1163,25 +1636,65 @@ footer {
     }
     
     .services-carousel-section {
-        padding: 1rem 0;
+        padding: 0.8rem 0 0.3rem 0; /* Padding reduzido para eliminar espaço vazio */
+        margin-bottom: 0; /* Remove margem inferior */
+    }
+    
+    /* Container Mobile Pequeno - Sem padding lateral */
+    .services-carousel-container {
+        padding: 0;
+        max-width: 100%;
+        margin-bottom: 0; /* Remove margem inferior */
+    }
+    
+    /* Carrossel Mobile Pequeno - 1 card principal visível */
+    .services-carousel {
+        padding-left: 0.75rem; /* Padding menor em telas pequenas */
+        padding-right: 0.75rem;
+        gap: 0.75rem;
+        margin-bottom: 0; /* Remove margem inferior */
+        overflow-x: auto; /* Permite scroll no mobile pequeno */
     }
     
     .service-card {
-        flex: 0 0 85%;
-        min-width: 0;
+        flex: 0 0 85% !important; /* Mobile pequeno: 85% da largura */
+        min-width: 260px;
+        scroll-snap-align: start; /* Mantém snap no mobile */
     }
     
     .service-card-image {
-        height: 220px;
-        border-radius: 12px;
+        height: 240px; /* Altura aumentada para melhor proporção */
+        border-radius: 32px !important; /* Bordas muito arredondadas */
     }
     
+    /* Proteção do texto - padding lateral adequado */
     .service-card-content {
-        padding: 1.2rem;
+        padding: 1.2rem 2.2rem; /* Padding ajustado */
+    }
+    
+    /* Botões menores em telas muito pequenas */
+    .carousel-nav-btn {
+        width: 36px;
+        height: 36px;
+        z-index: 20;
+    }
+    
+    .carousel-nav-btn svg {
+        width: 18px;
+        height: 18px;
+    }
+    
+    /* Botões overlay nas bordas dos cards - visíveis */
+    .carousel-nav-prev {
+        left: 5px;
+    }
+    
+    .carousel-nav-next {
+        right: 5px;
     }
     
     .service-card-title {
-        font-size: 1.2rem;
+        font-size: 1rem; /* Reduzido para caber completamente */
     }
     
     .service-card-description {
@@ -1194,6 +1707,28 @@ footer {
         padding: 0 1rem;
         margin-left: auto;
         margin-right: auto;
+        margin-bottom: 0; /* Remove margem inferior */
+    }
+    
+    /* Footer ajustado no mobile pequeno */
+    footer {
+        margin-top: 0; /* Remove margem superior no mobile pequeno */
+        padding: 1rem 0 0.7rem 0; /* Padding ainda mais reduzido */
+    }
+
+    .social-buttons-container {
+        gap: 0.7rem;
+        margin-bottom: 0.2rem;
+    }
+
+    .social-icon-button {
+        width: 40px;
+        height: 40px;
+    }
+
+    .social-icon {
+        width: 20px;
+        height: 20px;
     }
 
     .main-button {
@@ -1202,17 +1737,237 @@ footer {
         font-size: 0.98rem;
         border-radius: 14px;
     }
+
+    /* Ajustes do Chatbot no Mobile (480px) */
+    #chtl-widget-container,
+    .chtl-widget-container {
+        max-width: 100vw !important;
+        width: 100% !important;
+        left: 0 !important;
+        right: 0 !important;
+        margin: 0 !important;
+        padding: 0 10px !important;
+        box-sizing: border-box !important;
+    }
+
+    #chtl-widget-container iframe,
+    .chtl-widget-container iframe {
+        max-width: 100% !important;
+        width: 100% !important;
+    }
 }
 
-/* Ajuste para Tablets e PC */
+/* ============================================
+   TABLET - 2 cards visíveis (768px - 1023px)
+   ============================================ */
 @media (min-width: 768px) {
-    .service-card {
-        flex: 0 0 30%; 
-        min-width: 300px;
+    .services-carousel-container {
+        padding: 0;
+        max-width: 1200px;
     }
     
     .services-carousel {
-        justify-content: center; 
-        padding-left: 0;
+        gap: 1.2rem;
+        justify-content: flex-start;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scroll-snap-type: x mandatory; /* Mantém snap no tablet */
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+    
+    .services-carousel::-webkit-scrollbar {
+        display: none;
+    }
+    
+    /* Tablet: 2 cards por vez */
+    .service-card {
+        flex: 0 0 calc(50% - 0.6rem) !important;
+        min-width: calc(50% - 0.6rem);
+        max-width: calc(50% - 0.6rem);
+        scroll-snap-align: start;
+    }
+    
+    /* Altura proporcional para tablet */
+    .service-card-image {
+        height: 300px;
+    }
+    
+    .service-card-content {
+        padding: 1.5rem;
+    }
+    
+    .carousel-nav-btn {
+        width: 52px;
+        height: 52px;
+    }
+    
+    .carousel-nav-btn svg {
+        width: 26px;
+        height: 26px;
+    }
+    
+    .carousel-nav-prev {
+        left: -60px; /* Fora do container no tablet também */
+    }
+    
+    .carousel-nav-next {
+        right: -60px; /* Fora do container no tablet também */
+    }
+}
+
+/* ============================================
+   DESKTOP - 3 cards visíveis (1024px+)
+   ============================================ */
+@media (min-width: 1024px) {
+    .services-carousel-section {
+        padding: 2.5rem 0;
+        width: 100%;
+    }
+    
+    .services-carousel-container {
+        max-width: 600px; /* Largura restrita para criar bordas laterais e centralizar */
+        margin: 0 auto; /* Centraliza o conteúdo */
+        position: relative;
+        padding: 0 2rem; /* Espaço para os botões laterais */
+        display: block;
+        width: 100%;
+    }
+    
+    .services-carousel {
+        gap: 1.5rem;
+        justify-content: flex-start;
+        align-items: center;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scroll-snap-type: x mandatory; /* Mantém snap no desktop como no exemplo */
+        scroll-behavior: smooth;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        display: flex;
+        width: 100%;
+        position: relative;
+        padding: 0.5rem 0;
+        cursor: grab;
+        user-select: none;
+    }
+    
+    .services-carousel:active {
+        cursor: grabbing;
+    }
+    
+    .services-carousel::-webkit-scrollbar {
+        display: none;
+    }
+    
+    /* Desktop: Cards com flex 90% igual ao mobile - centralizados */
+    .service-card {
+        flex: 0 0 90% !important; /* 90% da largura como no exemplo */
+        scroll-snap-align: start; /* Mantém snap */
+        transition: transform 0.3s ease;
+        user-select: none;
+        -webkit-user-drag: none;
+        min-width: 0;
+    }
+    
+    .service-card-image {
+        height: 320px; /* Altura padrão como no exemplo */
+        width: 100%;
+        border-radius: 32px !important;
+        position: relative;
+        transition: all 0.3s ease;
+        background-size: cover !important;
+        background-position: center !important;
+        background-repeat: no-repeat !important;
+    }
+    
+    /* Cards no desktop usam o mesmo estilo base - sem classes específicas */
+    
+    .service-card-content {
+        padding: 1.5rem 2.8rem; /* Padding lateral para proteger do overlay dos botões */
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-end;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 2;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    
+    .service-card-title {
+        font-size: 1.2rem; /* Reduzido para caber completamente */
+        text-align: center;
+        width: 100%;
+        margin-bottom: 0.5rem;
+        margin-left: auto;
+        margin-right: auto;
+        line-height: 1.3; /* Melhor quebra de linha */
+    }
+    
+    .service-card-description {
+        text-align: center;
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .carousel-nav-btn {
+        width: 56px;
+        height: 56px;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 15;
+    }
+    
+    .carousel-nav-btn svg {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .carousel-nav-prev {
+        left: 0; /* Posicionado na borda esquerda do container */
+    }
+    
+    .carousel-nav-next {
+        right: 0; /* Posicionado na borda direita do container */
+    }
+}
+
+/* Estilos gerais do Chatbot */
+#chtl-widget-container,
+.chtl-widget-container,
+[class*="chtl-widget"],
+[id*="chtl-widget"] {
+    box-sizing: border-box !important;
+}
+
+/* Ajustes do Chatbot no Mobile - Geral */
+@media (max-width: 768px) {
+    #chtl-widget-container,
+    .chtl-widget-container,
+    [class*="chtl-widget"],
+    [id*="chtl-widget"] {
+        max-width: calc(100vw - 20px) !important;
+        width: calc(100% - 20px) !important;
+        left: 10px !important;
+        right: 10px !important;
+        margin: 0 auto !important;
+        padding: 0 !important;
+    }
+
+    #chtl-widget-container iframe,
+    .chtl-widget-container iframe,
+    [class*="chtl-widget"] iframe,
+    [id*="chtl-widget"] iframe {
+        max-width: 100% !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
     }
 }
