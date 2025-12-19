@@ -1,5 +1,5 @@
 /* =========================================
-   STYLE MEN - SCRIPT COMPLETO
+   STYLE MEN - SCRIPT COMPLETO COM CARROSSEL INFINITO
    ========================================= */
 
 // --- 1. LOADER ---
@@ -9,7 +9,7 @@ window.addEventListener('load', function() {
         if (loader) {
             loader.classList.add('hidden');
         }
-    }, 800);
+    }, 600);
 });
 
 // --- 2. ANIMAÇÕES FADE-IN NO SCROLL ---
@@ -42,238 +42,482 @@ window.addEventListener('scroll', function() {
     }
 });
 
-// --- 4. CARROSSEL / ACCORDION HORIZONTAL ---
-document.addEventListener('DOMContentLoaded', function() {
-    const carousel = document.getElementById('servicesCarousel');
-    
-    // Se não houver carrossel na página, encerra a função
-    if (!carousel) return;
+// --- 4. INFINITE LOOP CAROUSEL CLASS ---
+class InfiniteCarousel {
+    constructor(options = {}) {
+        // Configurações padrão
+        this.config = {
+            containerSelector: '.products',
+            wrapperSelector: '.products__wrapper',
+            carouselSelector: '.products__carousel',
+            cardSelector: '.product-card',
+            indicatorsSelector: '.products__indicators',
+            autoplay: true,
+            autoplayInterval: 4000,
+            transitionDuration: 1000,
+            pauseOnHover: true,
+            ...options
+        };
 
-    let currentIndex = 0;
-    const cards = carousel.querySelectorAll('.service-card');
-    const totalCards = cards.length;
-    let isScrolling = false;
-    let autoScrollInterval;
-    
-    // Variáveis para Drag (Arrastar)
-    let isDragging = false;
-    let startX = 0;
-    let scrollLeft = 0;
-    let startScrollLeft = 0;
-    
-    // Função global para parar auto-scroll (acessível de qualquer lugar)
-    function stopAutoScroll() {
-        clearInterval(autoScrollInterval);
+        // Estado
+        this.currentIndex = 0;
+        this.totalSlides = 0;
+        this.autoplayTimer = null;
+        this.isPlaying = this.config.autoplay;
+        this.isDragging = false;
+        this.isTransitioning = false;
+        this.startX = 0;
+        this.currentX = 0;
+        this.dragThreshold = 50;
+        this.animationFrame = null;
+        this.jumpTimeout = null;
+
+        // Elementos DOM
+        this.container = null;
+        this.wrapper = null;
+        this.carousel = null;
+        this.cards = [];
+        this.originalCards = [];
+        this.indicators = null;
+        this.dots = [];
+
+        this.init();
     }
-    
-    // >>> CORREÇÃO PRINCIPAL: Forçar o início no zero <<<
-    carousel.scrollLeft = 0;
 
-    // Função para mover o scroll até um card específico
-    function scrollToCard(index) {
-        if (isScrolling || isDragging) return;
-        
-        // Proteção: verifica se o card existe
-        if (!cards[index]) return;
+    init() {
+        this.container = document.querySelector(this.config.containerSelector);
+        if (!this.container) return;
 
-        isScrolling = true;
+        this.wrapper = this.container.querySelector(this.config.wrapperSelector);
+        this.carousel = this.container.querySelector(this.config.carouselSelector);
+        this.originalCards = [...this.carousel.querySelectorAll(this.config.cardSelector)];
+        this.indicators = this.container.querySelector(this.config.indicatorsSelector);
+
+        this.totalSlides = this.originalCards.length;
+
+        if (this.totalSlides === 0) return;
+
+        // Configurar carousel infinito
+        this.setupInfiniteCarousel();
+        this.createIndicators();
+        this.bindEvents();
         
-        const card = cards[index];
-        const cardWidth = card.offsetWidth;
-        const carouselWidth = carousel.offsetWidth;
-        
-        // Centraliza o card
-        const scrollPosition = card.offsetLeft - (carouselWidth - cardWidth) / 2;
-        
-        carousel.scrollTo({
-            left: scrollPosition,
-            behavior: 'smooth'
-        });
-        
-        // Atualiza classe active no desktop
-        if (window.innerWidth >= 1024) {
-            cards.forEach(card => card.classList.remove('active'));
-            if (cards[index]) {
-                cards[index].classList.add('active');
-            }
-        }
-        
+        // Inicializar na posição correta (primeiro card real)
         setTimeout(() => {
-            isScrolling = false;
-        }, 500);
-    }
-    
-    // Função para ir ao próximo card
-    function nextCard() {
-        if (isDragging) return;
-        currentIndex = (currentIndex + 1) % totalCards;
-        scrollToCard(currentIndex);
-    }
-    
-    // Função para ir ao card anterior
-    function prevCard() {
-        if (isDragging) return;
-        currentIndex = (currentIndex - 1 + totalCards) % totalCards;
-        scrollToCard(currentIndex);
-    }
-    
-    // Iniciar rolagem automática
-    function startAutoScroll() {
-        if (isDragging) return;
-        clearInterval(autoScrollInterval); // Limpa para evitar duplicidade
-        autoScrollInterval = setInterval(nextCard, 4000); // 4 segundos
-    }
-    
-    // Resetar timer de inatividade (volta a rolar se o usuário parar de mexer)
-    let inactivityTimer;
-    function resetAutoScroll() {
-        stopAutoScroll();
-        clearTimeout(inactivityTimer);
-        inactivityTimer = setTimeout(() => {
-            if (!isDragging) {
-                startAutoScroll();
-            }
-        }, 5000);
-    }
-
-    // --- Eventos de Mouse ---
-    carousel.addEventListener('mousedown', function(e) {
-        isDragging = true;
-        carousel.style.cursor = 'grabbing';
-        startX = e.pageX - carousel.offsetLeft;
-        startScrollLeft = carousel.scrollLeft;
-        resetAutoScroll();
-        e.preventDefault();
-    });
-    
-    carousel.addEventListener('mouseleave', function() {
-        if (isDragging) {
-            isDragging = false;
-            carousel.style.cursor = 'grab';
-        }
-    });
-    
-    carousel.addEventListener('mouseup', function() {
-        if (isDragging) {
-            isDragging = false;
-            carousel.style.cursor = 'grab';
-            resetAutoScroll();
-        }
-    });
-    
-    carousel.addEventListener('mousemove', function(e) {
-        if (!isDragging) return;
-        e.preventDefault();
-        const x = e.pageX - carousel.offsetLeft;
-        const walk = (x - startX) * 2; // Velocidade do arrasto
-        carousel.scrollLeft = startScrollLeft - walk;
-    });
-    
-    // --- Eventos de Touch (Celular) ---
-    let touchStartX = 0;
-    let touchStartScrollLeft = 0;
-    
-    carousel.addEventListener('touchstart', function(e) {
-        isDragging = true;
-        touchStartX = e.touches[0].pageX - carousel.offsetLeft;
-        touchStartScrollLeft = carousel.scrollLeft;
-        resetAutoScroll();
-    }, { passive: true });
-    
-    carousel.addEventListener('touchmove', function(e) {
-        if (!isDragging) return;
-        const x = e.touches[0].pageX - carousel.offsetLeft;
-        const walk = (x - touchStartX) * 2;
-        carousel.scrollLeft = touchStartScrollLeft - walk;
-    }, { passive: true });
-    
-    carousel.addEventListener('touchend', function() {
-        if (isDragging) {
-            isDragging = false;
-            resetAutoScroll();
-        }
-    });
-    
-    // Detectar scroll manual para atualizar o índice atual
-    let scrollTimeout;
-    carousel.addEventListener('scroll', function() {
-        // Pausa o automático se o usuário scrollar
-        resetAutoScroll();
-        
-        // Atualiza qual é o card "ativo"
-        clearTimeout(scrollTimeout);
-        scrollTimeout = setTimeout(() => {
-            // Encontra o card mais próximo do centro
-            const carouselCenter = carousel.scrollLeft + carousel.offsetWidth / 2;
-            let closestIndex = 0;
-            let closestDistance = Infinity;
-            
-            cards.forEach((card, index) => {
-                const cardCenter = card.offsetLeft + card.offsetWidth / 2;
-                const distance = Math.abs(carouselCenter - cardCenter);
-                if (distance < closestDistance) {
-                    closestDistance = distance;
-                    closestIndex = index;
-                }
-                // Remove classe active de todos os cards
-                card.classList.remove('active');
-            });
-            currentIndex = closestIndex;
-            // Adiciona classe active ao card mais próximo do centro (apenas no desktop)
-            if (window.innerWidth >= 1024 && cards[closestIndex]) {
-                cards[closestIndex].classList.add('active');
-            }
+            this.goToSlide(0, false);
+            // Garantir que o primeiro card seja marcado como ativo
+            this.updateActiveStates();
         }, 100);
-    });
-    
-    // Botões de navegação
-    const prevBtn = document.getElementById('carouselPrev');
-    const nextBtn = document.getElementById('carouselNext');
-    
-    if (prevBtn && nextBtn) {
-        // Tamanho do scroll baseado na largura do card + gap
-        // Calcula dinamicamente baseado no primeiro card visível (igual ao exemplo)
-        function getScrollAmount() {
-            if (cards.length === 0) return 320;
-            const firstCard = cards[0];
-            const cardWidth = firstCard.offsetWidth;
-            const gap = parseInt(window.getComputedStyle(carousel).gap) || 16;
-            return cardWidth + gap;
+
+        // Iniciar autoplay imediatamente para movimento contínuo
+        if (this.config.autoplay) {
+            setTimeout(() => {
+                this.startAutoplay();
+            }, 300);
+        }
+    }
+
+    setupInfiniteCarousel() {
+        // Clonar cards para criar loop infinito
+        const fragment = document.createDocumentFragment();
+        
+        // Clonar os últimos 2 cards e adicionar no início
+        for (let i = this.totalSlides - 1; i >= Math.max(0, this.totalSlides - 2); i--) {
+            const clone = this.originalCards[i].cloneNode(true);
+            clone.classList.add('clone');
+            clone.setAttribute('data-clone', 'prepend');
+            clone.setAttribute('data-original-index', i);
+            this.carousel.insertBefore(clone, this.carousel.firstChild);
         }
         
-        nextBtn.addEventListener('click', () => {
-            const scrollAmount = getScrollAmount();
-            carousel.scrollBy({
-                left: scrollAmount,
-                behavior: 'smooth'
+        // Clonar os primeiros 2 cards e adicionar no final
+        for (let i = 0; i < Math.min(2, this.totalSlides); i++) {
+            const clone = this.originalCards[i].cloneNode(true);
+            clone.classList.add('clone');
+            clone.setAttribute('data-clone', 'append');
+            clone.setAttribute('data-original-index', i);
+            this.carousel.appendChild(clone);
+        }
+
+        // Atualizar lista de cards (incluindo clones)
+        this.cards = [...this.carousel.querySelectorAll(this.config.cardSelector)];
+        
+        // Número de clones no início
+        this.clonesBefore = Math.min(2, this.totalSlides);
+        
+        // Configurar transição suave para movimento contínuo
+        this.carousel.style.transition = `transform ${this.config.transitionDuration}ms cubic-bezier(0.4, 0, 0.2, 1)`;
+    }
+
+    createIndicators() {
+        if (!this.indicators) return;
+
+        this.indicators.innerHTML = '';
+
+        // Criar dots apenas para cards originais
+        for (let i = 0; i < this.totalSlides; i++) {
+            const dot = document.createElement('button');
+            dot.className = 'products__dot';
+            if (i === 0) dot.classList.add('active'); // Primeiro dot ativo
+            dot.setAttribute('aria-label', `Ir para slide ${i + 1}`);
+            dot.addEventListener('click', () => {
+                this.goToSlide(i);
+                this.resetAutoplayTimer();
             });
-            resetAutoScroll();
+            this.indicators.appendChild(dot);
+        }
+
+        this.dots = [...this.indicators.querySelectorAll('.products__dot')];
+    }
+
+    bindEvents() {
+        // Pausar autoplay no hover
+        if (this.config.pauseOnHover) {
+            this.container.addEventListener('mouseenter', () => this.pauseAutoplay());
+            this.container.addEventListener('mouseleave', () => this.resumeAutoplay());
+        }
+
+        // Mouse drag events
+        this.carousel.addEventListener('mousedown', (e) => this.handleDragStart(e));
+        this.carousel.addEventListener('mousemove', (e) => this.handleDragMove(e));
+        this.carousel.addEventListener('mouseup', (e) => this.handleDragEnd(e));
+        this.carousel.addEventListener('mouseleave', (e) => {
+            if (this.isDragging) this.handleDragEnd(e);
         });
 
-        prevBtn.addEventListener('click', () => {
-            const scrollAmount = getScrollAmount();
-            carousel.scrollBy({
-                left: -scrollAmount,
-                behavior: 'smooth'
+        // Touch events
+        this.carousel.addEventListener('touchstart', (e) => this.handleDragStart(e), { passive: true });
+        this.carousel.addEventListener('touchmove', (e) => this.handleDragMove(e), { passive: true });
+        this.carousel.addEventListener('touchend', (e) => this.handleDragEnd(e));
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => this.handleKeyboard(e));
+
+        // Resize handler
+        window.addEventListener('resize', () => this.handleResize());
+
+        // Visibility change
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                this.pauseAutoplay();
+            } else {
+                this.resumeAutoplay();
+            }
+        });
+
+        // Listener para fim da transição (para o loop infinito)
+        this.carousel.addEventListener('transitionend', () => this.handleTransitionEnd());
+
+        // Adicionar eventos de clique nos cards para abrir chatbot
+        this.cards.forEach(card => {
+            card.addEventListener('click', () => {
+                openChatbot();
             });
-            resetAutoScroll();
         });
     }
-    
-    // Inicialização final do carrossel
-    setTimeout(() => {
-        carousel.scrollLeft = 0; // Garante mais uma vez que começa do início
-        // Adiciona classe active ao primeiro card no desktop
-        if (window.innerWidth >= 1024 && cards[0]) {
-            cards[0].classList.add('active');
+
+    getCardWidth() {
+        return this.cards[0].offsetWidth;
+    }
+
+    getWrapperWidth() {
+        return this.wrapper ? this.wrapper.offsetWidth : this.carousel.parentElement.offsetWidth;
+    }
+
+    goToSlide(index, animate = true) {
+        this.currentIndex = index;
+        
+        const realIndex = index + this.clonesBefore;
+        const cardWidth = this.getCardWidth();
+        const wrapperWidth = this.getWrapperWidth();
+        
+        // No mobile, não centralizar - mostrar o card do início
+        const isMobile = window.innerWidth < 640;
+        const centerOffset = isMobile ? 0 : (wrapperWidth - cardWidth) / 2;
+        const translateX = -(realIndex * cardWidth) + centerOffset;
+
+        if (animate) {
+            this.carousel.style.transition = `transform ${this.config.transitionDuration}ms cubic-bezier(0.4, 0, 0.2, 1)`;
+        } else {
+            this.carousel.style.transition = 'none';
         }
-        startAutoScroll();
-    }, 1000);
+
+        this.carousel.style.transform = `translateX(${translateX}px)`;
+
+        if (!animate) {
+            void this.carousel.offsetHeight;
+            this.carousel.style.transition = `transform ${this.config.transitionDuration}ms cubic-bezier(0.4, 0, 0.2, 1)`;
+            this.isTransitioning = false;
+        }
+
+        this.updateActiveStates();
+    }
+
+    handleTransitionEnd() {
+        // Não fazer nada aqui - permitir movimento contínuo
+        // Não resetar isTransitioning para manter movimento fluido
+        this.isTransitioning = false;
+    }
+
+    jumpToSlide(index) {
+        if (this.autoplayTimer) {
+            clearTimeout(this.autoplayTimer);
+            this.autoplayTimer = null;
+        }
+        
+        if (this.jumpTimeout) {
+            clearTimeout(this.jumpTimeout);
+            this.jumpTimeout = null;
+        }
+        
+        const realIndex = index + this.clonesBefore;
+        const cardWidth = this.getCardWidth();
+        const wrapperWidth = this.getWrapperWidth();
+        const isMobile = window.innerWidth < 640;
+        const centerOffset = isMobile ? 0 : (wrapperWidth - cardWidth) / 2;
+        const translateX = -(realIndex * cardWidth) + centerOffset;
+
+        this.carousel.style.transition = 'none';
+        this.carousel.style.transform = `translateX(${translateX}px)`;
+        
+        void this.carousel.offsetHeight;
+        
+        this.carousel.style.transition = `transform ${this.config.transitionDuration}ms cubic-bezier(0.4, 0, 0.2, 1)`;
+        
+        this.isTransitioning = false;
+        
+        this.updateActiveStates();
+        
+        // Continuar movimento imediatamente após jump para movimento contínuo
+        if (this.isPlaying && !this.isDragging) {
+            // Pequeno delay para garantir que o jump foi aplicado
+            setTimeout(() => {
+                const nextIndex = this.currentIndex + 1;
+                if (nextIndex >= this.totalSlides) {
+                    this.currentIndex = this.totalSlides;
+                    this.goToClone('next');
+                } else {
+                    this.goToSlide(nextIndex, true);
+                }
+                this.scheduleNextAutoplay();
+            }, 10);
+        }
+    }
+    
+    scheduleNextAutoplay() {
+        if (!this.isPlaying || this.isDragging) return;
+        
+        // Começar próximo movimento mais cedo para movimento contínuo (65% da duração)
+        const overlapTime = this.config.transitionDuration * 0.65;
+        this.autoplayTimer = setTimeout(() => {
+            if (!this.isDragging && this.isPlaying) {
+                this.next();
+                this.scheduleNextAutoplay();
+            }
+        }, overlapTime);
+    }
+
+    updateActiveStates() {
+        let normalizedIndex = this.currentIndex;
+        if (normalizedIndex < 0) normalizedIndex = this.totalSlides - 1;
+        if (normalizedIndex >= this.totalSlides) normalizedIndex = 0;
+
+        this.cards.forEach((card, i) => {
+            const isOriginal = !card.classList.contains('clone');
+            const cardIndex = isOriginal 
+                ? this.originalCards.indexOf(card)
+                : parseInt(card.getAttribute('data-original-index'));
+            
+            card.classList.toggle('active', cardIndex === normalizedIndex);
+        });
+
+        if (this.dots) {
+            this.dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === normalizedIndex);
+            });
+        }
+    }
+
+    next() {
+        // Não bloquear - permitir movimento contínuo
+        const nextIndex = this.currentIndex + 1;
+        
+        if (nextIndex >= this.totalSlides) {
+            this.currentIndex = this.totalSlides;
+            this.goToClone('next');
+        } else {
+            this.goToSlide(nextIndex, true);
+        }
+    }
+
+    prev() {
+        if (this.isTransitioning) return;
+        
+        const prevIndex = this.currentIndex - 1;
+        
+        if (prevIndex < 0) {
+            this.currentIndex = -1;
+            this.goToClone('prev');
+        } else {
+            this.goToSlide(prevIndex);
+        }
+    }
+
+    goToClone(direction) {
+        let realIndex;
+        let targetIndex;
+        if (direction === 'next') {
+            realIndex = this.totalSlides + this.clonesBefore;
+            targetIndex = 0;
+        } else {
+            realIndex = this.clonesBefore - 1;
+            targetIndex = this.totalSlides - 1;
+        }
+
+        const cardWidth = this.getCardWidth();
+        const wrapperWidth = this.getWrapperWidth();
+        const isMobile = window.innerWidth < 640;
+        const centerOffset = isMobile ? 0 : (wrapperWidth - cardWidth) / 2;
+        const translateX = -(realIndex * cardWidth) + centerOffset;
+
+        this.carousel.style.transition = `transform ${this.config.transitionDuration}ms cubic-bezier(0.4, 0, 0.2, 1)`;
+        this.carousel.style.transform = `translateX(${translateX}px)`;
+
+        this.updateActiveStates();
+        
+        // Fazer o jump mais rápido (45% da duração) para movimento contínuo sem pausas
+        const jumpDelay = Math.max(20, this.config.transitionDuration * 0.45);
+        this.jumpTimeout = setTimeout(() => {
+            if ((direction === 'next' && this.currentIndex >= this.totalSlides) ||
+                (direction === 'prev' && this.currentIndex < 0)) {
+                this.currentIndex = targetIndex;
+                this.jumpToSlide(this.currentIndex);
+            }
+        }, jumpDelay);
+    }
+
+    startAutoplay() {
+        if (!this.config.autoplay) return;
+        this.isPlaying = true;
+        
+        this.next();
+        this.scheduleNextAutoplay();
+    }
+
+    stopAutoplay() {
+        if (this.autoplayTimer) {
+            clearTimeout(this.autoplayTimer);
+            this.autoplayTimer = null;
+        }
+        if (this.animationFrame) {
+            cancelAnimationFrame(this.animationFrame);
+            this.animationFrame = null;
+        }
+        if (this.jumpTimeout) {
+            clearTimeout(this.jumpTimeout);
+            this.jumpTimeout = null;
+        }
+    }
+
+    pauseAutoplay() {
+        this.stopAutoplay();
+    }
+
+    resumeAutoplay() {
+        if (this.isPlaying && this.config.autoplay) {
+            this.stopAutoplay();
+            this.startAutoplay();
+        }
+    }
+
+    resetAutoplayTimer() {
+        if (this.isPlaying && this.config.autoplay) {
+            this.stopAutoplay();
+            this.startAutoplay();
+        }
+    }
+
+    handleDragStart(e) {
+        if (this.isTransitioning) return;
+        
+        this.isDragging = true;
+        this.startX = e.type.includes('mouse') ? e.pageX : e.touches[0].pageX;
+        this.carousel.classList.add('dragging');
+        this.carousel.style.cursor = 'grabbing';
+        this.pauseAutoplay();
+    }
+
+    handleDragMove(e) {
+        if (!this.isDragging) return;
+        if (e.type.includes('mouse')) e.preventDefault();
+        this.currentX = e.type.includes('mouse') ? e.pageX : e.touches[0].pageX;
+    }
+
+    handleDragEnd(e) {
+        if (!this.isDragging) return;
+        this.isDragging = false;
+        this.carousel.classList.remove('dragging');
+        this.carousel.style.cursor = 'grab';
+
+        const diff = this.startX - this.currentX;
+
+        if (Math.abs(diff) > this.dragThreshold) {
+            if (diff > 0) {
+                this.next();
+            } else {
+                this.prev();
+            }
+        }
+
+        this.resumeAutoplay();
+    }
+
+    handleKeyboard(e) {
+        if (this.isTransitioning) return;
+        
+        if (e.key === 'ArrowLeft') {
+            this.prev();
+            this.resetAutoplayTimer();
+        } else if (e.key === 'ArrowRight') {
+            this.next();
+            this.resetAutoplayTimer();
+        }
+    }
+
+    handleResize() {
+        this.goToSlide(this.currentIndex, false);
+    }
+
+    destroy() {
+        this.stopAutoplay();
+    }
+
+    getState() {
+        return {
+            currentIndex: this.currentIndex,
+            totalSlides: this.totalSlides,
+            isPlaying: this.isPlaying
+        };
+    }
+}
+
+// =========================================
+// INICIALIZAÇÃO DO CARROSSEL
+// =========================================
+document.addEventListener('DOMContentLoaded', () => {
+    const carousel = new InfiniteCarousel({
+        autoplay: true,
+        autoplayInterval: 4000,
+        transitionDuration: 3000,
+        pauseOnHover: false
+    });
+
+    window.carousel = carousel;
 });
 
-// Smooth scroll para links internos (caso adicione menu no futuro)
+// Smooth scroll para links internos
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
+    anchor.addEventListener('click', function(e) {
         const targetId = this.getAttribute('href');
         if (targetId === '#') return;
         
@@ -321,7 +565,6 @@ function openChatbot() {
             chatbotIframe.style.display = 'block';
             chatbotIframe.style.visibility = 'visible';
             chatbotIframe.style.zIndex = '99999';
-            // Tenta enviar mensagem para abrir
             try {
                 chatbotIframe.contentWindow.postMessage({ type: 'open', action: 'open' }, '*');
             } catch (err) {
@@ -338,7 +581,6 @@ function openChatbot() {
                 el.style.visibility = 'visible';
                 el.style.zIndex = '99999';
             }
-            // Tenta clicar se for clicável
             if (el.tagName === 'BUTTON' || el.tagName === 'A' || el.onclick) {
                 el.click();
             }
@@ -353,7 +595,6 @@ document.addEventListener('DOMContentLoaded', function() {
         agendarBtn.addEventListener('click', function(e) {
             e.preventDefault();
             
-            // Aguarda o script do chatbot carregar
             let attempts = 0;
             const maxAttempts = 10;
             
@@ -361,73 +602,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 attempts++;
                 openChatbot();
                 
-                // Verifica se o chatbot foi aberto ou se excedeu tentativas
                 const widgetVisible = document.querySelector('[id*="chtl-widget"][style*="block"], [class*="chtl-widget"][style*="block"]');
                 if (widgetVisible || attempts >= maxAttempts) {
                     clearInterval(tryOpen);
                 }
             }, 300);
             
-            // Para após 3 segundos
             setTimeout(() => {
                 clearInterval(tryOpen);
             }, 3000);
         });
     }
-    
-    // Botão Flutuante do Chatbot
-    const floatingChatbot = document.getElementById('floatingChatbot');
-    if (floatingChatbot) {
-        floatingChatbot.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            // Aguarda o script do chatbot carregar
-            let attempts = 0;
-            const maxAttempts = 10;
-            
-            const tryOpen = setInterval(() => {
-                attempts++;
-                openChatbot();
-                
-                // Verifica se o chatbot foi aberto ou se excedeu tentativas
-                const widgetVisible = document.querySelector('[id*="chtl-widget"][style*="block"], [class*="chtl-widget"][style*="block"]');
-                if (widgetVisible || attempts >= maxAttempts) {
-                    clearInterval(tryOpen);
-                }
-            }, 300);
-            
-            // Para após 3 segundos
-            setTimeout(() => {
-                clearInterval(tryOpen);
-            }, 3000);
-        });
-    }
-    
-    // Cards do carrossel - Abrir chatbot ao clicar
-    const cards = document.querySelectorAll('.service-card');
-    cards.forEach(card => {
-        card.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            // Aguarda o script do chatbot carregar
-            let attempts = 0;
-            const maxAttempts = 10;
-            
-            const tryOpen = setInterval(() => {
-                attempts++;
-                openChatbot();
-                
-                // Verifica se o chatbot foi aberto ou se excedeu tentativas
-                const widgetVisible = document.querySelector('[id*="chtl-widget"][style*="block"], [class*="chtl-widget"][style*="block"]');
-                if (widgetVisible || attempts >= maxAttempts) {
-                    clearInterval(tryOpen);
-                }
-            }, 300);
-            
-            // Para após 3 segundos
-            setTimeout(() => {
-                clearInterval(tryOpen);
-            }, 3000);
-        });
-    });
 });

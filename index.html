@@ -17,27 +17,32 @@
 </head>
 
 <body>
+    <!-- Ambient Glow Effects -->
+    <div class="ambient-glow ambient-glow--top"></div>
+    <div class="ambient-glow ambient-glow--bottom"></div>
+
     <!-- Loader -->
     <div class="loader-container" id="loader">
         <div class="loader"></div>
     </div>
 
-    <!-- Banner Hero com Logo e Descrição -->
-    <section class="hero-banner">
-        <div class="hero-content">
-            <div class="logo-container">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQx3BuW6HFFnJi_6Y6VYhtNEdsyOMv1FnSaTQ&s"
-                    alt="Style Girls Logo">
+    <!-- Main Content -->
+    <main class="page">
+        <!-- Banner Hero com Logo e Descrição -->
+        <header class="hero-banner">
+            <div class="hero-content">
+                <div class="logo-container">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQx3BuW6HFFnJi_6Y6VYhtNEdsyOMv1FnSaTQ&s"
+                        alt="Style Girls Logo">
+                </div>
+                <p>Moda Feminina de Qualidade</p>
             </div>
-            <p>Moda Feminina de Qualidade</p>
-        </div>
-    </section>
+        </header>
 
-    <div class="contact-grid">
-        <!-- Botões Sociais (Instagram, Facebook e Mapa) -->
-        <div class="social-buttons-container fade-in-element">
-            <a class="social-icon-button" href="https://instagram.com/stylemenoficial" target="_blank"
-                title="Siga no Instagram">
+        <!-- Social Icons Section -->
+        <section class="social-icons">
+            <a href="https://instagram.com/stylemenoficial" target="_blank" class="social-icon-button"
+                aria-label="Siga no Instagram">
                 <span class="glitter-particle glitter-1">✦</span>
                 <span class="glitter-particle glitter-2">✦</span>
                 <svg class="social-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -46,8 +51,8 @@
                     <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" stroke="currentColor" stroke-width="2" />
                 </svg>
             </a>
-            <a class="social-icon-button" href="https://facebook.com/stylemenoficial" target="_blank"
-                title="Curta no Facebook">
+            <a href="https://facebook.com/stylemenoficial" target="_blank" class="social-icon-button"
+                aria-label="Curta no Facebook">
                 <span class="glitter-particle glitter-1">✦</span>
                 <span class="glitter-particle glitter-2">✦</span>
                 <svg class="social-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -55,8 +60,8 @@
                         stroke-width="2" />
                 </svg>
             </a>
-            <a class="social-icon-button" href="https://www.google.com/maps/search/?api=1&query=-7.1194958,-34.8733876"
-                target="_blank" title="Ver no Google Maps">
+            <a href="https://www.google.com/maps/search/?api=1&query=-7.1194958,-34.8733876" target="_blank"
+                class="social-icon-button" aria-label="Ver no Google Maps">
                 <span class="glitter-particle glitter-1">✦</span>
                 <span class="glitter-particle glitter-2">✦</span>
                 <svg class="social-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -64,11 +69,13 @@
                     <circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="2" />
                 </svg>
             </a>
-        </div>
+        </section>
 
-        <!-- Agenda -->
-        <div class="button-container fade-in-element">
+        <!-- CTA Button -->
+        <section class="cta-section">
             <button class="main-button">
+                <span class="glitter-particle glitter-1">✦</span>
+                <span class="glitter-particle glitter-2">✦</span>
                 <svg class="button-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <rect x="3" y="4" width="18" height="18" rx="2" ry="2" stroke="currentColor" stroke-width="2" />
                     <line x1="16" y1="2" x2="16" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
@@ -82,74 +89,64 @@
                 </svg>
                 <span>Agende Conosco</span>
             </button>
-            <p class="text">Tire suas dúvidas sobre nossos produtos</p>
-        </div>
+            <p class="cta-section__hint">Tire suas dúvidas sobre nossos produtos</p>
+        </section>
 
-        <!-- Carrossel de Serviços -->
-        <section class="services-carousel-section">
-            <div class="services-carousel-container">
-                <!-- Botão de Navegação Esquerda -->
-                <button class="carousel-nav-btn carousel-nav-prev" id="carouselPrev" aria-label="Anterior">
-                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-                            stroke-linejoin="round" />
-                    </svg>
-                </button>
+        <!-- Products Carousel -->
+        <section class="products">
+            <div class="products__wrapper">
+                <div class="products__carousel" id="servicesCarousel">
+                    <article class="product-card">
+                        <div class="product-card__inner">
+                            <div class="product-card__bg" style="background-image: url('cabelos.png');"></div>
+                            <div class="product-card__content">
+                                <h3 class="product-card__title">Cortes de cabelo</h3>
+                            </div>
+                        </div>
+                    </article>
 
-                <!-- Botão de Navegação Direita -->
-                <button class="carousel-nav-btn carousel-nav-next" id="carouselNext" aria-label="Próximo">
-                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-                            stroke-linejoin="round" />
-                    </svg>
-                </button>
+                    <article class="product-card">
+                        <div class="product-card__inner">
+                            <div class="product-card__bg" style="background-image: url('lavagem.png');"></div>
+                            <div class="product-card__content">
+                                <h3 class="product-card__title">Lavagem Premium</h3>
+                            </div>
+                        </div>
+                    </article>
 
-                <div class="services-carousel" id="servicesCarousel">
-                    <div class="service-card">
-                        <div class="service-card-image" style="background-image: url('cabelos.png');">
-                            <div class="service-card-overlay"></div>
-                            <div class="service-card-content">
-                                <h3 class="service-card-title">Cortes de cabelo</h3>
+                    <article class="product-card">
+                        <div class="product-card__inner">
+                            <div class="product-card__bg" style="background-image: url('estilos.png');"></div>
+                            <div class="product-card__content">
+                                <h3 class="product-card__title">Seu estilo de beleza</h3>
                             </div>
                         </div>
-                    </div>
-                    <div class="service-card">
-                        <div class="service-card-image" style="background-image: url('lavagem.png');">
-                            <div class="service-card-overlay"></div>
-                            <div class="service-card-content">
-                                <h3 class="service-card-title">Lavagem Premium</h3>
+                    </article>
+
+                    <article class="product-card">
+                        <div class="product-card__inner">
+                            <div class="product-card__bg" style="background-image: url('itens.png');"></div>
+                            <div class="product-card__content">
+                                <h3 class="product-card__title">Acessórios & Outros</h3>
                             </div>
                         </div>
-                    </div>
-                    <div class="service-card">
-                        <div class="service-card-image" style="background-image: url('estilos.png');">
-                            <div class="service-card-overlay"></div>
-                            <div class="service-card-content">
-                                <h3 class="service-card-title">Seu estilo de beleza</h3>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="service-card">
-                        <div class="service-card-image" style="background-image: url('itens.png');">
-                            <div class="service-card-overlay"></div>
-                            <div class="service-card-content">
-                                <h3 class="service-card-title">Acessórios & Outros</h3>
-                            </div>
-                        </div>
-                    </div>
+                    </article>
                 </div>
             </div>
-        </section>
-    </div>
 
-    <!-- Footer minimalista -->
-    <footer>
+            <!-- Position Indicators (Dots) -->
+            <div class="products__indicators"></div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
         <div class="footer-content">
             <div class="footer-bottom">
-                <p>&copy; 2025 HairSalon - Moda Feminina. Todos os direitos reservados.
-                <p class="text-footer"> Crie seu serviço on-line com a <a
-                        href="https://Acessar.github.io/systech.com" target="_blank">Systech</a></p>
-                </p>
+                <p class="footer__copyright">&copy; 2025 HairSalon - Moda Feminina. Todos os direitos reservados.</p>
+                <p class="footer__credit">Crie seu serviço on-line com a <a href="https://Acessar.github.io/systech.com"
+                        target="_blank">Systech</a></p>
             </div>
         </div>
     </footer>
@@ -159,6 +156,5 @@
     <script async data-id="4924658132" id="chtl-script" type="text/javascript"
         src="https://chatling.ai/js/embed.js"></script>
 </body>
-
 
 </html>
